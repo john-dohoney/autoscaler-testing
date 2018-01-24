@@ -1,7 +1,4 @@
-# autoscaler-testing
-
-
-## Testing DC/OS EE autoscaler for Marathon apps
+# Testing DC/OS EE autoscaler for Marathon apps
 
 One small edit need to be performed to use this rest based test of the Autoscaler.
 
@@ -29,7 +26,7 @@ One small edit need to be performed to use this rest based test of the Autoscale
 
 Go to line 63 and change <Your Public Agent IP> to the IP address of your public agent (an example is below):
 ``` bash
-     "HAPROXY_0_VHOST": "52.21.123.5",
+     "HAPROXY_0_VHOST": "52.21.123.115",
 ```
 
 ### Run the test script
@@ -45,10 +42,20 @@ Assuming you are using CentOS, install ab using:
 ```
 ### Loading the Autoscaler
 
-You can hit the REST endpoint outside of the cluster or internally and or externally.  Also, you can inspect 
+You can hit the REST endpoint outside of the cluster or internally and or externally.  Simulate internal load
+as microservice calling each other.  External traffic is best simulated from different AWS Regions to simulate
+your users in varying regions of the country or world.
 
 Internal
-
+``` bash
+ab -t 360 -k -n 10000 -r  node.marathon.l4lb.thisdcos.directory:8080/hello
+```
 
 External
-  ab -n 100000 -c 200 -s 2  http://52.21.123.5/api/hello
+``` bash
+  ab -t 3600 -n 100000 -c 200   http://52.21.123.115/api/hello
+```
+Note:  This is a very simple API that only reports the Environment. Use this as a model, but it is best to use an application from your environment.
+
+Closing Comments, this is a time investment.  Expect to experiment, both with the autoscaler, and understandoing your app under load.  This is why in my blog
+post I suggest approaching this as a team - Ops, Developer, QA, and Business Stakeholder to arrive at the optimal performance in your cluster.
