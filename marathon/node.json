@@ -1,0 +1,67 @@
+{
+  "id": "NAMESPACE/node",
+  "backoffFactor": 1.15,
+  "backoffSeconds": 1,
+  "container": {
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "hostPort": 0,
+        "labels": {
+          "VIP_0": "/node:8080"
+        },
+        "protocol": "tcp",
+        "servicePort": 0,
+        "name": "myapi"
+      }
+    ],
+    "type": "MESOS",
+    "volumes": [],
+    "docker": {
+      "image": "johndohoney/simplenode",
+      "forcePullImage": false,
+      "parameters": []
+    }
+  },
+  "cpus": 0.8,
+  "disk": 0,
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "maxConsecutiveFailures": 3,
+      "portIndex": 0,
+      "timeoutSeconds": 20,
+      "delaySeconds": 15,
+      "protocol": "MESOS_HTTP",
+      "path": "/health"
+    }
+  ],
+  "instances": 1,
+  "maxLaunchDelaySeconds": 3600,
+  "mem": 24,
+  "gpus": 0,
+  "networks": [
+    {
+      "mode": "container/bridge"
+    }
+  ],
+  "requirePorts": false,
+  "upgradeStrategy": {
+    "maximumOverCapacity": 1,
+    "minimumHealthCapacity": 1
+  },
+  "killSelection": "YOUNGEST_FIRST",
+  "unreachableStrategy": {
+    "inactiveAfterSeconds": 0,
+    "expungeAfterSeconds": 0
+  },
+  "fetch": [],
+  "constraints": [],
+  "labels": {
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_VHOST": "<Your Public Agent IP>",
+    "HAPROXY_0_PATH": "/api",
+    "HAPROXY_0_HTTP_BACKEND_PROXYPASS_PATH": "/api"
+  }
+}
